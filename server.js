@@ -46,14 +46,13 @@ type  Query{
     students : [Students]
     quotes : [Quotes]
 }
-type  Query{
-    msg : String
-}
+
  type Students{
-     id:ID   
+     id:ID!
      name:String 
      lastName:String 
      password:String 
+     quotes:[Quotes]
 }
 
 type Quotes{
@@ -65,13 +64,17 @@ type Quotes{
 
 const resolvers_obj={
     Query:{
-        // msg:()=>{
-        //     return 'A msg '
-        // }
+      
         students:()=>students,
         quotes:()=>quotes
 
-    }
+    },
+    Students:{
+        quotes:(student_received)=>{
+           return  quotes.filter(quote=> quote.by==student_received.id)
+        }
+    }   
+
 }
 
 const server=new ApolloServer({
