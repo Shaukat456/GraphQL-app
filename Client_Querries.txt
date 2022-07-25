@@ -1,0 +1,18 @@
+# Write your query or mutation here
+
+# Client Side 
+
+
+query GetAllStudents{
+students{
+  id
+  name
+  
+}
+}
+
+query GetAllQuotes{
+ quotes{
+  name
+}
+}
