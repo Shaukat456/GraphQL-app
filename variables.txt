@@ -1,0 +1,12 @@
+query something ($stdId:ID!){
+  istudent(id:$stdId){
+    name
+  }
+}
+
+
+#query variable
+
+{
+    $stdId:"1"
+}

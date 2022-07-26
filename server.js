@@ -44,7 +44,7 @@ const typeDefs = gql
 `
 type  Query{
     students : [Students]
-    istudent(id:ID):Students
+    istudent(id:ID!):Students
     quotes : [Quotes]
 
 }
