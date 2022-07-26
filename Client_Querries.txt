@@ -16,3 +16,23 @@ query GetAllQuotes{
   name
 }
 }
+type  Query{
+    students : [Students]
+    istudent(id:ID!):Students
+    quotes : [Quotes]
+
+}
+
+ type Students{
+     id:ID!
+     name:String 
+     lastName:String 
+     password:String 
+     quotes:[Quotes]
+}
+
+type Quotes{
+    name:String
+    by:String
+}
+`
