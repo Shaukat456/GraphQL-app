@@ -44,7 +44,9 @@ const typeDefs = gql
 `
 type  Query{
     students : [Students]
+    istudent(id:ID):Students
     quotes : [Quotes]
+
 }
 
  type Students{
@@ -66,9 +68,12 @@ const resolvers_obj={
     Query:{
       
         students:()=>students,
-        quotes:()=>quotes
+        quotes:()=>quotes,
+        istudent:(parent, {id})=>students.find(std=> std.id==id)
+        
 
     },
+    // Student is the parent of quote
     Students:{
         quotes:(student_received)=>{
            return  quotes.filter(quote=> quote.by==student_received.id)
