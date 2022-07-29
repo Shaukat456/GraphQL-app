@@ -1,6 +1,6 @@
 import { ApolloServer , gql} from 'apollo-server'
 import { ApolloServerPluginLandingPageGraphQLPlayground} from 'apollo-server-core'
-
+import  {randomBytes} from "crypto"
 
 
 //Collection  = students
@@ -61,6 +61,10 @@ type Quotes{
     name:String
     by:String
 }
+
+type Mutation{
+    signUpStudent(name:String , lastName:String, password:String ):Students
+}
 `
 
 
@@ -78,10 +82,25 @@ const resolvers_obj={
         quotes:(student_received)=>{
            return  quotes.filter(quote=> quote.by==student_received.id)
         }
-    }   
+    } ,
+    Mutation:{
+        signUpStudent:(_, args)=>{
+            const Gen_Id=randomBytes(1).toString("hex");
+            // students array me push karna hai ab
+
+            students.push({
+                id:Gen_Id,
+                name:args.name,
+                lastName:args.lastName,
+                password:args.password
+            })
+
+            return students.find(std=>std.id==Gen_Id)
+        }
+    }
 
 }
-
+// process.setMaxListeners();
 const server=new ApolloServer({
     typeDefs,
     resolvers:resolvers_obj,
