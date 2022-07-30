@@ -1,0 +1,10 @@
+mutation {
+  signUpStudent(name:"myfirstname",lastName:"mylastname",password:"something"){
+    id
+    name
+    lastName
+    password
+  }
+}
+
+
