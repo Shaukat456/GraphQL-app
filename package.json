@@ -1,9 +1,11 @@
-{"type": "module",
+{
+  "type": "module",
   "dependencies": {
     "apollo-server": "^3.10.0",
     "apollo-server-core": "^3.10.0",
-    "graphql": "^16.5.0"
-
+    "bcryptjs": "^2.4.3",
+    "graphql": "^16.5.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.5.0"
   }
-  
 }

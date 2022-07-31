@@ -1,16 +1,38 @@
 import { ApolloServer , gql} from 'apollo-server'
 import { ApolloServerPluginLandingPageGraphQLPlayground} from 'apollo-server-core'
 import  {randomBytes} from "crypto"
+import mongoose from 'mongoose'
+import "models/Quotes.js"
+import "models/Student.js"
 
 
-// 
-// mongodb+srv://shaukat:12345@cluster0.x8ihi.mongodb.net/?retryWrites=true&w=majority
+
 
 
 
 //Collection  = students
 
 //doc1 //doc2 are the documetns of collection
+
+
+mongoose.connect(MONGO_URL, {
+    useNewUrlParser:true,
+    useUnifiedTopology:true,
+
+
+})
+
+
+mongoose.connection.on("connected",()=>{
+    console.log("connected to mongDob")
+})
+mongoose.connection.on("error",(err)=>{
+        console.log("error connecting ", err)
+})
+
+//model 
+
+
 
 
 export const students=[
