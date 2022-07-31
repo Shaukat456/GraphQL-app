@@ -3,6 +3,11 @@ import { ApolloServerPluginLandingPageGraphQLPlayground} from 'apollo-server-cor
 import  {randomBytes} from "crypto"
 
 
+// 
+// mongodb+srv://shaukat:12345@cluster0.x8ihi.mongodb.net/?retryWrites=true&w=majority
+
+
+
 //Collection  = students
 
 //doc1 //doc2 are the documetns of collection
