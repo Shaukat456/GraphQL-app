@@ -63,8 +63,15 @@ type Quotes{
 }
 
 type Mutation{
-    signUpStudent(name:String , lastName:String, password:String ):Students
+    signUpStudent(StudentNew:StudentInput):Students
 }
+
+input StudentInput{
+    name:String 
+    lastName:String
+    password:String
+} 
+
 `
 
 
@@ -84,19 +91,34 @@ const resolvers_obj={
         }
     } ,
     Mutation:{
-        signUpStudent:(_, args)=>{
+        // signUpStudent:(_, args)=>{
+        //     const Gen_Id=randomBytes(1).toString("hex");
+        //     // students array me push karna hai ab
+
+        //     students.push({
+        //         id:Gen_Id,
+        //         name:args.name,
+        //         lastName:args.lastName,
+        //         password:args.password
+        //     })
+
+        //     return students.find(std=>std.id==Gen_Id)
+        // }
+
+
+        signUpStudent:(_, {StudentNew})=>{
             const Gen_Id=randomBytes(1).toString("hex");
             // students array me push karna hai ab
 
             students.push({
                 id:Gen_Id,
-                name:args.name,
-                lastName:args.lastName,
-                password:args.password
+                ...StudentNew
             })
 
             return students.find(std=>std.id==Gen_Id)
         }
+
+        
     }
 
 }
