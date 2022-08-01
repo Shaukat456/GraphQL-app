@@ -147,6 +147,7 @@ input StudentInput{
 
 
 const resolvers_obj={
+
     Query:{
       
         students:()=>students,
@@ -162,64 +163,46 @@ const resolvers_obj={
         }
     } ,
     Mutation:{
-        // signUpStudent:(_, args)=>{
-        //     const Gen_Id=randomBytes(1).toString("hex");
-        //     // students array me push karna hai ab
-
-        //     students.push({
-        //         _id:Gen_Id,
-        //         name:args.name,
-        //         lastName:args.lastName,
-        //         password:args.password
-        //     })
-
-        //     return students.find(std=>std._id==Gen_Id)
-        // }
-
-
-        // signUpStudent:(_, {StudentNew})=>{
-        //     const Gen_Id=randomBytes(1).toString("hex");
-        //     // students array me push karna hai ab
-
-        //     students.push({
-        //         _id:Gen_Id,
-        //         ...StudentNew
-        //     })
-
-        //     return students.find(std=>std._id==Gen_Id)
-        // }
-
         signUpStudent:async(_, {StudentNew})=>{
            const check_already_exist=await  Student_model.findOne({
                 name:StudentNew.name
             })
+            console.log(check_already_exist)
 
-            if(check_already_exist){
-                throw new Error("Student Already Exist ")
+            try{
+                if(check_already_exist){
+                    throw new Error("Student with this name already exist ")
+                }
+                
+                //hash password before saving
+                
+                const hashedPassword= await bcrypt.hash(StudentNew.password, 10)
+                console.log(hashedPassword)
+                
+                const Register_Student =  new Student_model({
+                    ...StudentNew,
+                    
+                    //overwritting password field of student new 
+                    password:hashedPassword
+                })
+                return    await  Register_Student.save()
+            }
+            catch(err){
+                console.log(err)
+                return err;
             }
 
-            //hash password before saving
-
-           let hashedPassword= await bcrypt.hash(StudentNew.password, 10)
-            console.log(hashedPassword)
-
-          const Register_Student =  new Student_model({
-                ...StudentNew,
-
-                //overwritting password field of student new 
-                password:hashedPassword
-            })
-
             // return check_already_exist.save()
-           const student_Registered=await Register_Student.save()
-           console.log(student_Registered, " has been registered")
-           return student_Registered;
+        //    const student_Registered=await Register_Student.save()
+        //    console.log(student_Registered, " has been registered")
+        //    return student_Registered;
         }
+
+       
         
     }
 
 }
-// process.setMaxListeners();
 const server=new ApolloServer({
     typeDefs,
     resolvers:resolvers_obj,
