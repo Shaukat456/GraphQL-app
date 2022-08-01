@@ -1,0 +1,8 @@
+//    signUpStudent:(_, {StudentNew})=>{
+//             const Gen_Id=randomBytes(1).toString("hex");
+//             // students array me push karna hai ab
+
+//             students.push({
+//                 _id:Gen_Id,
+//                 ...StudentNew
+//             })

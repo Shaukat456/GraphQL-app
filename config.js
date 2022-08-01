@@ -1,1 +1,1 @@
-const MONGO_URL="mongodb+srv://shaukat:12345@cluster0.x8ihi.mongodb.net/?MiniSocialAppretryWrites=true&w=majority"
+const MONGO_URL="mongodb+srv://shaukat:12345@cluster0.x8ihi.mongodb.net/MiniSocialApp?retryWrites=true&w=majority"

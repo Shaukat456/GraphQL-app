@@ -2,9 +2,9 @@ import { ApolloServer , gql} from 'apollo-server'
 import { ApolloServerPluginLandingPageGraphQLPlayground} from 'apollo-server-core'
 import  {randomBytes} from "crypto"
 import mongoose from 'mongoose'
-import "models/Quotes.js"
-import "models/Student.js"
-
+// import Quotes from  "models/Quotes.js"
+// import Student from  "models/Student.js"
+import bcrypt from 'bcryptjs'
 
 
 
@@ -15,7 +15,7 @@ import "models/Student.js"
 //doc1 //doc2 are the documetns of collection
 
 
-mongoose.connect(MONGO_URL, {
+mongoose.connect("mongodb+srv://shaukat:12345@cluster0.x8ihi.mongodb.net/MiniSocialApp?retryWrites=true&w=majority", {
     useNewUrlParser:true,
     useUnifiedTopology:true,
 
@@ -37,13 +37,13 @@ mongoose.connection.on("error",(err)=>{
 
 export const students=[
     {
-        id:'1',
+        _id:'1',
         name:"Shaukat",
         lastName:"sohail",
         password:"12345"
     },
     {
-        id:'2',
+        _id:'2',
         name:"Ahmed",
         lastName:"iqbal",
         password:"654987"
@@ -57,7 +57,7 @@ export const quotes=[
 
     {
         name:"this is a quote by me ",
-        by:'1'  // by which user   // refers to the id of the student 
+        by:'1'  // by which user   // refers to the _id of the student 
     },
     {
         name:"hello there is not a quote ",
@@ -66,18 +66,62 @@ export const quotes=[
 ]
 
 
+const Quotes_Schema= new mongoose.Schema({
+   
+    name:{
+        type:String,
+},
+
+by:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:"Student"  // it is referring to Student model 
+}
+
+
+})
+
+
+const Quotes_Model=mongoose.model("Quotes",Quotes_Schema)
+
+
+
+
+
+const student_Schema= new mongoose.Schema({
+   
+    name:{
+        type:String,
+},
+
+lastName:{
+    type:String
+},
+password:{
+    type:String
+}
+
+
+
+})
+
+const Student_model = mongoose.model("Student",student_Schema)
+
+
+
+
+
 
 const typeDefs = gql
 `
 type  Query{
     students : [Students]
-    istudent(id:ID!):Students
+    istudent(_id:ID!):Students
     quotes : [Quotes]
 
 }
 
  type Students{
-     id:ID!
+     _id:ID!
      name:String 
      lastName:String 
      password:String 
@@ -107,14 +151,14 @@ const resolvers_obj={
       
         students:()=>students,
         quotes:()=>quotes,
-        istudent:(parent, {id})=>students.find(std=> std.id==id)
+        istudent:(parent, {_id})=>students.find(std=> std._id==_id)
         
 
     },
     // Student is the parent of quote
     Students:{
         quotes:(student_received)=>{
-           return  quotes.filter(quote=> quote.by==student_received.id)
+           return  quotes.filter(quote=> quote.by==student_received._id)
         }
     } ,
     Mutation:{
@@ -123,28 +167,54 @@ const resolvers_obj={
         //     // students array me push karna hai ab
 
         //     students.push({
-        //         id:Gen_Id,
+        //         _id:Gen_Id,
         //         name:args.name,
         //         lastName:args.lastName,
         //         password:args.password
         //     })
 
-        //     return students.find(std=>std.id==Gen_Id)
+        //     return students.find(std=>std._id==Gen_Id)
         // }
 
 
-        signUpStudent:(_, {StudentNew})=>{
-            const Gen_Id=randomBytes(1).toString("hex");
-            // students array me push karna hai ab
+        // signUpStudent:(_, {StudentNew})=>{
+        //     const Gen_Id=randomBytes(1).toString("hex");
+        //     // students array me push karna hai ab
 
-            students.push({
-                id:Gen_Id,
-                ...StudentNew
+        //     students.push({
+        //         _id:Gen_Id,
+        //         ...StudentNew
+        //     })
+
+        //     return students.find(std=>std._id==Gen_Id)
+        // }
+
+        signUpStudent:async(_, {StudentNew})=>{
+           const check_already_exist=await  Student_model.findOne({
+                name:StudentNew.name
             })
 
-            return students.find(std=>std.id==Gen_Id)
-        }
+            if(check_already_exist){
+                throw new Error("Student Already Exist ")
+            }
 
+            //hash password before saving
+
+           let hashedPassword= await bcrypt.hash(StudentNew.password, 10)
+            console.log(hashedPassword)
+
+          const Register_Student =  new Student_model({
+                ...StudentNew,
+
+                //overwritting password field of student new 
+                password:hashedPassword
+            })
+
+            // return check_already_exist.save()
+           const student_Registered=await Register_Student.save()
+           console.log(student_Registered, " has been registered")
+           return student_Registered;
+        }
         
     }
 
