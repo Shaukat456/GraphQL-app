@@ -24,7 +24,7 @@ mongoose.connect("mongodb+srv://shaukat:12345@cluster0.x8ihi.mongodb.net/MiniSoc
 
 
 mongoose.connection.on("connected",()=>{
-    console.log("connected to mongDob")
+    console.log("connected to mongoDB")
 })
 mongoose.connection.on("error",(err)=>{
         console.log("error connecting ", err)
@@ -111,7 +111,7 @@ const Student_model = mongoose.model("Student",student_Schema)
 
 
 
-const typeDefs = gql
+const typeDefs = gql    
 `
 type  Query{
     students : [Students]
@@ -134,7 +134,7 @@ type Quotes{
 }
 
 type Mutation{
-    signUpStudent(StudentNew:StudentInput):Students
+    signUpStudent(StudentNew:StudentInput):Students 
 }
 
 input StudentInput{
@@ -163,39 +163,40 @@ const resolvers_obj={
         }
     } ,
     Mutation:{
-        signUpStudent:async(_, {StudentNew})=>{
+        signUpStudent: async (_, {StudentNew})=>{
+            console.log("student new " , StudentNew)
            const check_already_exist=await  Student_model.findOne({
-                name:StudentNew.name
+                // lastName:StudentNew.lastName
             })
             console.log(check_already_exist)
 
             try{
-                if(check_already_exist){
-                    throw new Error("Student with this name already exist ")
-                }
+                // if(check_already_exist){
+                //     throw new Error("Student with this name already exist ")
+                // }
                 
                 //hash password before saving
                 
-                const hashedPassword= await bcrypt.hash(StudentNew.password, 10)
-                console.log(hashedPassword)
+                // const hashedPassword= await bcrypt.hash(StudentNew.password, 10)
+                // console.log(hashedPassword)
                 
-                const Register_Student =  new Student_model({
+                const Register_Student = new Student_model({
                     ...StudentNew,
                     
                     //overwritting password field of student new 
-                    password:hashedPassword
+                    // password:hashedPassword
                 })
-                return    await  Register_Student.save()
+                const Saved=await Register_Student.save()
+                // console.log(Saved)
+                return Saved;
+                
             }
             catch(err){
                 console.log(err)
                 return err;
             }
 
-            // return check_already_exist.save()
-        //    const student_Registered=await Register_Student.save()
-        //    console.log(student_Registered, " has been registered")
-        //    return student_Registered;
+            
         }
 
        
